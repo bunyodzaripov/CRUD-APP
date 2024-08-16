@@ -1,0 +1,12 @@
+{
+  "users": [
+    {
+      "id": "2b02",
+      "first_name": "aaaaa",
+      "last_name": "12",
+      "age": "21",
+      "email": "asdas@mail.ru",
+      "number": "12"
+    }
+  ]
+}
