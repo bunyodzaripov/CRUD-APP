@@ -3,6 +3,21 @@ const btn = document.getElementById("btn");
 const modal = document.getElementById("modal");
 const form = document.getElementById("form");
 const mainUrl = "http://localhost:3000/users";
+const pageSpan = document.getElementById("page-span");
+const page = new Proxy(
+   { value: 1, max: Number.MAX_SAFE_INTEGER },
+   {
+      set: (target, key, value) => {
+         if (key === "value") {
+            if (value < 1 || value > target.max) return;
+            target[key] = value;
+            pageSpan.innerText = value;
+            getData();
+         } else target[key] = value;
+      },
+      get: (target, key) => target[key],
+   }
+);
 
 document.addEventListener("DOMContentLoaded", () => {
    getData();
@@ -42,13 +57,17 @@ async function saveData(event) {
 }
 async function getData() {
    try {
-      const data = await fetch(`${mainUrl}`).then((res) => res.json());
+      const data = await fetch(
+         `${mainUrl}?_page=${page.value}&_per_page=2`
+      ).then((res) => res.json());
+      if (data?.pages) page.max = data.pages;
       displayData(data);
    } catch (error) {
       console.log(error);
    }
 }
 function displayData(data) {
+   if (!Array.isArray(data) && Array.isArray(data?.data)) data = data.data;
    if (!data?.length) return;
    tbody.innerHTML = "";
 
@@ -73,7 +92,12 @@ function displayData(data) {
          editData({ ...item, id: itemId });
       };
 
-      const children = [index + 1, ...Object.values(item), deleteBtn, editBtn];
+      const children = [
+         index + (page.value * 2 - 1),
+         ...Object.values(item),
+         deleteBtn,
+         editBtn,
+      ];
       for (let child of children) {
          if (!(child instanceof Object)) child = document.createTextNode(child);
          const td = document.createElement("td");

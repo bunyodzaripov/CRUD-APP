@@ -11,7 +11,7 @@ body {
 .modal {
    display: none;
    position: fixed;
-   z-index: 1;
+   z-index: 99999;
    left: 0;
    top: 0;
    width: 100%;
@@ -21,9 +21,13 @@ body {
 }
 
 .modal-content {
-   background-color: white;
+   background-color: #fefefe;
    margin: 5% auto;
    padding: 20px;
    border: 1px solid #888;
    width: 50%;
+}
+
+.card-body {
+   background-color: #fefefe;
 }
